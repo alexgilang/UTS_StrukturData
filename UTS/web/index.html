@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"
+    />
+    <title>Daftar Kota & Stasiun</title>
+    <style>
+      body {
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        margin: 20px;
+        background: #f9f9f9;
+        color: #333;
+      }
+      h1 {
+        text-align: center;
+        color: #2c3e50;
+      }
+      #searchBox {
+        display: block;
+        margin: 10px auto 20px auto;
+        width: 90%;
+        max-width: 400px;
+        padding: 10px;
+        font-size: 16px;
+        border: 2px solid #2980b9;
+        border-radius: 6px;
+      }
+      #listContainer {
+        margin: 0 auto 20px auto;
+        width: 90%;
+        max-width: 600px;
+        min-height: 100px;
+        background: white;
+        border-radius: 8px;
+        box-shadow: 0 0 10px #ccc;
+        padding: 15px;
+        overflow-y: auto;
+        max-height: 400px;
+      }
+      .city-item {
+        border-bottom: 1px solid #eee;
+        padding: 10px 0;
+      }
+      .city-title {
+        font-weight: 700;
+        font-size: 1.1em;
+        color: #2c3e50;
+        cursor: pointer;
+      }
+      .station-list {
+        margin-left: 15px;
+        margin-top: 8px;
+      }
+      .station-item {
+        padding: 4px 0;
+        font-size: 0.95em;
+        color: #34495e;
+      }
+      button {
+        background-color: #2980b9;
+        color: white;
+        border: none;
+        padding: 12px 20px;
+        margin: 5px 4px;
+        border-radius: 6px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+      }
+      button:hover {
+        background-color: #1f6391;
+      }
+      #inputForms {
+        max-width: 600px;
+        margin: 0 auto;
+      }
+      .form-section {
+        display: none;
+        background: white;
+        padding: 15px;
+        border-radius: 8px;
+        box-shadow: 0 0 10px #ccc;
+        margin-bottom: 20px;
+      }
+      .form-section h3 {
+        margin-top: 0;
+        color: #2c3e50;
+      }
+      .form-section input {
+        width: 95%;
+        padding: 8px;
+        margin: 10px 0;
+        border-radius: 6px;
+        border: 1.5px solid #2980b9;
+        font-size: 1em;
+      }
+      .form-section button {
+        margin-top: 10px;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Daftar Kota & Stasiun</h1>
+    <input
+      type="text"
+      id="searchBox"
+      placeholder="Cari kota atau stasiun..."
+      aria-label="Cari kota atau stasiun"
+    />
+
+    <div
+      id="listContainer"
+      aria-live="polite"
+      aria-atomic="true"
+      role="region"
+      tabindex="0"
+    >
+      <!-- Daftar kota dan stasiun akan ditampilkan di sini -->
+    </div>
+
+    <div style="text-align: center; margin-bottom: 30px">
+      <button id="btnAddCity">Tambah Kota</button>
+      <button id="btnAddStation">Tambah Stasiun</button>
+      <button id="btnDeleteCity">Hapus Kota</button>
+      <button id="btnDeleteStation">Hapus Stasiun</button>
+    </div>
+
+    <div id="inputForms">
+      <div id="formAddCity" class="form-section" aria-hidden="true">
+        <h3>Tambah Kota</h3>
+        <input
+          type="text"
+          id="inputCityName"
+          placeholder="Nama Kota"
+          aria-label="Nama Kota"
+        />
+        <button id="submitAddCity">Simpan Kota</button>
+        <button class="cancelBtn">Batal</button>
+      </div>
+
+      <div id="formAddStation" class="form-section" aria-hidden="true">
+        <h3>Tambah Stasiun</h3>
+        <input
+          type="text"
+          id="inputStationCity"
+          placeholder="Nama Kota"
+          aria-label="Nama Kota untuk Stasiun"
+        />
+        <input
+          type="text"
+          id="inputStationName"
+          placeholder="Nama Stasiun"
+          aria-label="Nama Stasiun"
+        />
+        <input
+          type="text"
+          id="inputStationAddress"
+          placeholder="Alamat Stasiun"
+          aria-label="Alamat Stasiun"
+        />
+        <input
+          type="text"
+          id="inputStationPhone"
+          placeholder="Nomor Telepon Stasiun"
+          aria-label="Nomor Telepon Stasiun"
+        />
+        <button id="submitAddStation">Simpan Stasiun</button>
+        <button class="cancelBtn">Batal</button>
+      </div>
+
+      <div id="formDeleteCity" class="form-section" aria-hidden="true">
+        <h3>Hapus Kota</h3>
+        <input
+          type="text"
+          id="inputDeleteCity"
+          placeholder="Nama Kota yang ingin dihapus"
+          aria-label="Nama Kota yang ingin dihapus"
+        />
+        <button id="submitDeleteCity">Hapus Kota</button>
+        <button class="cancelBtn">Batal</button>
+      </div>
+
+      <div id="formDeleteStation" class="form-section" aria-hidden="true">
+        <h3>Hapus Stasiun</h3>
+        <input
+          type="text"
+          id="inputDeleteStationCity"
+          placeholder="Nama Kota"
+          aria-label="Nama Kota dari stasiun yang ingin dihapus"
+        />
+        <input
+          type="text"
+          id="inputDeleteStationName"
+          placeholder="Nama Stasiun yang ingin dihapus"
+          aria-label="Nama Stasiun yang ingin dihapus"
+        />
+        <button id="submitDeleteStation">Hapus Stasiun</button>
+        <button class="cancelBtn">Batal</button>
+      </div>
+    </div>
+
+    <script>
+      // Dummy data storage to simulate backend
+      let dataKota = [];
+
+      const searchBox = document.getElementById("searchBox");
+      const listContainer = document.getElementById("listContainer");
+
+      function renderList(filter = "") {
+        listContainer.innerHTML = "";
+        const filterLower = filter.toLowerCase();
+        let foundAny = false;
+
+        dataKota.forEach((kota) => {
+          let cityMatch = kota.NamaKota.toLowerCase().includes(filterLower);
+          let stationMatch = kota.Stasiun.some((s) =>
+            s.Nama.toLowerCase().includes(filterLower)
+          );
+
+          if (cityMatch || stationMatch) {
+            foundAny = true;
+            const cityDiv = document.createElement("div");
+            cityDiv.className = "city-item";
+
+            const cityTitle = document.createElement("div");
+            cityTitle.className = "city-title";
+            cityTitle.setAttribute("tabindex", "0");
+            cityTitle.textContent = kota.NamaKota;
+            cityDiv.appendChild(cityTitle);
+
+            const stationList = document.createElement("div");
+            stationList.className = "station-list";
+
+            kota.Stasiun.forEach((stasiun) => {
+              if (
+                filter === "" ||
+                stasiun.Nama.toLowerCase().includes(filterLower) ||
+                cityMatch
+              ) {
+                const stationDiv = document.createElement("div");
+                stationDiv.className = "station-item";
+                stationDiv.textContent = `${stasiun.Nama} - Alamat: ${stasiun.Alamat} - Telp: ${stasiun.Notelp}`;
+                stationList.appendChild(stationDiv);
+              }
+            });
+
+            cityDiv.appendChild(stationList);
+            listContainer.appendChild(cityDiv);
+          }
+        });
+
+        if (!foundAny) {
+          listContainer.innerHTML = `<p style="text-align:center; opacity:0.7;">Tidak ditemukan hasil.</p>`;
+        }
+      }
+
+      searchBox.addEventListener("input", () => {
+        renderList(searchBox.value);
+      });
+
+      // Input form handling
+      function showForm(formId) {
+        document.querySelectorAll(".form-section").forEach((form) => {
+          form.style.display = "none";
+          form.setAttribute("aria-hidden", "true");
+        });
+        const form = document.getElementById(formId);
+        form.style.display = "block";
+        form.setAttribute("aria-hidden", "false");
+      }
+
+      function hideForms() {
+        document.querySelectorAll(".form-section").forEach((form) => {
+          form.style.display = "none";
+          form.setAttribute("aria-hidden", "true");
+        });
+      }
+
+      document.getElementById("btnAddCity").addEventListener("click", () => {
+        showForm("formAddCity");
+        document.getElementById("inputCityName").value = "";
+      });
+
+      document.getElementById("btnAddStation").addEventListener("click", () => {
+        showForm("formAddStation");
+        document.getElementById("inputStationCity").value = "";
+        document.getElementById("inputStationName").value = "";
+        document.getElementById("inputStationAddress").value = "";
+        document.getElementById("inputStationPhone").value = "";
+      });
+
+      document.getElementById("btnDeleteCity").addEventListener("click", () => {
+        showForm("formDeleteCity");
+        document.getElementById("inputDeleteCity").value = "";
+      });
+
+      document
+        .getElementById("btnDeleteStation")
+        .addEventListener("click", () => {
+          showForm("formDeleteStation");
+          document.getElementById("inputDeleteStationCity").value = "";
+          document.getElementById("inputDeleteStationName").value = "";
+        });
+
+      document.querySelectorAll(".cancelBtn").forEach((btn) => {
+        btn.addEventListener("click", hideForms);
+      });
+
+      // Submit handlers
+      document.getElementById("submitAddCity").addEventListener("click", () => {
+        const cityName = document.getElementById("inputCityName").value.trim();
+        if (cityName === "") {
+          alert("Nama kota tidak boleh kosong!");
+          return;
+        }
+        // Check if city already exists
+        if (
+          dataKota.find(
+            (k) => k.NamaKota.toLowerCase() === cityName.toLowerCase()
+          )
+        ) {
+          alert("Kota sudah ada!");
+          return;
+        }
+        dataKota.push({ NamaKota: cityName, Stasiun: [] });
+        renderList(searchBox.value);
+        hideForms();
+      });
+
+      document
+        .getElementById("submitAddStation")
+        .addEventListener("click", () => {
+          const cityName = document
+            .getElementById("inputStationCity")
+            .value.trim();
+          const stationName = document
+            .getElementById("inputStationName")
+            .value.trim();
+          const stationAddress = document
+            .getElementById("inputStationAddress")
+            .value.trim();
+          const stationPhone = document
+            .getElementById("inputStationPhone")
+            .value.trim();
+
+          if (cityName === "" || stationName === "") {
+            alert("Nama kota dan stasiun tidak boleh kosong!");
+            return;
+          }
+
+          const kota = dataKota.find(
+            (k) => k.NamaKota.toLowerCase() === cityName.toLowerCase()
+          );
+          if (!kota) {
+            alert(
+              "Kota tidak ditemukan, silakan tambahkan kota terlebih dahulu."
+            );
+            return;
+          }
+
+          if (
+            kota.Stasiun.find(
+              (s) => s.Nama.toLowerCase() === stationName.toLowerCase()
+            )
+          ) {
+            alert("Stasiun sudah ada di kota ini!");
+            return;
+          }
+
+          kota.Stasiun.push({
+            Nama: stationName,
+            Alamat: stationAddress,
+            Notelp: stationPhone,
+          });
+
+          renderList(searchBox.value);
+          hideForms();
+        });
+
+      document
+        .getElementById("submitDeleteCity")
+        .addEventListener("click", () => {
+          const cityName = document
+            .getElementById("inputDeleteCity")
+            .value.trim();
+          const index = dataKota.findIndex(
+            (k) => k.NamaKota.toLowerCase() === cityName.toLowerCase()
+          );
+          if (index === -1) {
+            alert("Kota tidak ditemukan.");
+            return;
+          }
+          dataKota.splice(index, 1);
+          renderList(searchBox.value);
+          hideForms();
+        });
+
+      document
+        .getElementById("submitDeleteStation")
+        .addEventListener("click", () => {
+          const cityName = document
+            .getElementById("inputDeleteStationCity")
+            .value.trim();
+          const stationName = document
+            .getElementById("inputDeleteStationName")
+            .value.trim();
+          const kota = dataKota.find(
+            (k) => k.NamaKota.toLowerCase() === cityName.toLowerCase()
+          );
+          if (!kota) {
+            alert("Kota tidak ditemukan.");
+            return;
+          }
+          const stationIndex = kota.Stasiun.findIndex(
+            (s) => s.Nama.toLowerCase() === stationName.toLowerCase()
+          );
+          if (stationIndex === -1) {
+            alert("Stasiun tidak ditemukan di kota ini.");
+            return;
+          }
+          kota.Stasiun.splice(stationIndex, 1);
+          renderList(searchBox.value);
+          hideForms();
+        });
+
+      // Initial render
+      renderList();
+    </script>
+  </body>
+</html>
